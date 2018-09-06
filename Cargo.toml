@@ -1,0 +1,8 @@
+[package]
+name = "lox"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klass@spotify.com>"]
+
+[dependencies]
+pest = "1.0.6"
+pest_derive = "1.0.7"

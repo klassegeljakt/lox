@@ -1,0 +1,18 @@
+Main = _{ soi ~ Decl+ ~ eoi }
+  Decl = { Fun }
+  Fun = { "fn" ~ "(" ~ Arg? ~ ("," ~ Arg)* ~ ")" ~ "{" ~ Expr ~ "}" }
+    Block = { "{" ~ Expr ~ "}" }
+    Arg = { Id ~ ":" ~ Type }
+    Type = { Id }
+  Expr = _{ Num ~ ( BinOp ~ Num )* }
+    Num = { Digit+ }
+    BinOp = _{ Add | Mul }
+      Add = { "+" }
+      Mul = { "*" }
+
+Digit = _{ '0'..'9' }
+Alpha = _{ 'a'..'z' | 'A'..'Z' }
+Alnum = _{ Digit | Alpha }
+Id = { Alpha ~ Alnum* }
+
+whitespace = _{ " " | "\t" }

@@ -1,0 +1,40 @@
+PROGRAM = _{ soi ~ DECL ~ eoi }
+  STMT = { DECL | LET | EXPR ~ ";" }
+    DECL = { STRUCT | FUNC | ENUM | LET }
+      STRUCT = { "struct" ~ "{" ~ FIELDS ~ "}" }
+        FIELDS = { ID }
+      FUNC
+      ENUM
+      TRAIT
+      USE   = { "use" ~ PATH }
+    PLACE_EXPR = {  }
+    EXPR = { UNARY | BINARY | IF | WHILE | TERM }
+      TERM = { ( "(" ~ EXPR ~ ")" ) | LIT | VAR}
+        VAR = { ID }
+        LIT = { INT | FLOAT | STR | CHAR | BOOL | UNIT }
+          INT   = { '1'..'9' ~ DIGIT* }
+          FLOAT = { DIGIT+ ~ "." ~ DIGIT+ }
+          STR   = { "\"" ~ ALNUM* ~ "\"" }
+          CHAR  = { "'"  ~ ALNUM  ~ "'" }
+          BOOL  = { "true" | "false" }
+          UNIT  = { "()" }
+      UNARY = { UNOP+ ~ TERM }
+        UNOP = { "!" | "-"  | "*" | "&" }
+      BINARY = { TERM ~ ( BINOP ~ TERM)+ }
+        BINOP = { "&&" | "||" | "==" | "!=" | "+" | "-" | "*" | "/" }
+      IF = { "if" ~ COND ~ (BLOCK | EXPR) ~ ( "else" ~ (BLOCK | EXPR))? }
+      WHILE = { "while" ~ COND ~ BLOCK }
+      FOR = { "for" ~ "(" ~ EXPR ~ ";" ~ EXPR ~ ";" ~ EXPR ~ ")" ~ BLOCK }
+
+COND   = { "(" ~ EXPR ~ ")" }
+BLOCK  = { "{" ~ EXPR ~ "}" }
+INDEX  = { "[" ~ EXPR ~ "]" }
+ACCESS = { EXPR ~ "." ~ ID }
+ID     = { ALPHA ~ ALNUM* }
+PATH   = { "::"? ~ (ID ~ "::")* ~ (ID | "*") }
+
+
+ALPHA   = { 'a'..'z' | 'A'..'Z' }
+DIGIT   = { '0'..'9' }
+ALNUM   = { ALPHA | DIGIT }
+whitespace = _{ " " | "\t" }

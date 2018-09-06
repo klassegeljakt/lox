@@ -1,0 +1,53 @@
+whitespace = _{ " " | "\t" }
+
+Program = { soi ~ Decl+ ~ eoi }
+
+Decl = { Class | Fun | Var | Stmt }
+  Class = { "class" ~ Id ~ ( "<" ~ Id )? ~ "{" ~ Fun* ~ "}" }
+  Fun   = { "fun" ~ Id ~ "(" ~ Params? ~ ")" ~ Block }
+    Params = { Id ~ ( "," ~ Id )* }
+  Var   = { "var" ~ Id ~ ( "=" ~ Expr )? ~ ";" }
+
+Stmt = { ExprStmt | For | If | Print | Return | While | Block }
+  ExprStmt = { Expr ~ ";" }
+  For      = { "for" ~ Range ~ Stmt }
+  If       = { "if" ~ Cond ~ Stmt ~ ( "else" ~ Stmt )? }
+  Print    = { "print" ~ Expr ~ ";" }
+  Return   = { "return" ~ Expr? ~ ";" }
+  While    = { "while" ~ Cond ~ Stmt }
+  Block    = { "{" ~ Decl* ~ "}" }
+
+Range = { "(" ~ ( Var | ExprStmt | ";" ) ~ Expr? ~ ";" ~ Expr? ~ ")" }
+Cond  = { "(" ~ Expr ~ ")" }
+
+Expr = { Assign | Binary | Unary | Call | Primary }
+  Assign = { ( Call ~ "." )? ~ Id ~ "=" ~ Assign }
+  Binary = { Primary ~ ( BinaryOp ~ Primary )+ }
+    BinaryOp = {
+      Or  | And | Eq  | Neq |
+      Gt  | Geq | Lt  | Leq |
+      Add | Sub | Mul | Div
+    }
+    Or  = { "||" } And = { "&&" } Eq  = { "==" } Neq = { "!=" }
+    Gt  = { ">"  } Geq = { ">=" } Lt  = { "<"  } Leq = { "<=" }
+    Add = { "+"  } Sub = { "-"  } Mul = { "*"  } Div = { "/"  }
+  Unary = { UnaryOp+ ~ Expr }
+    UnaryOp = { Not | Neg }
+      Not = { "!" }
+      Neg = { "-" }
+  Call = { Primary ~ ( ( "." ~ Method ) )* }
+    Method = { Id ~ "(" ~ Args? ~ ")" }
+      Args = { Expr ~ ( "," ~ Expr )* }
+  Primary = { "(" ~ Expr ~ ")" | Lit | Id | "super" ~ "." ~ Id }
+    Lit = { Float | Int | Str | Char | Bool }
+      Float = { ( '1'..'9' ) ~ Digit* ~ "." ~ Digit+ }
+      Int   = { ( '1'..'9' ) ~ Digit* }
+      Str   = { "\"" ~ Alnum* ~ "\"" }
+      Char  = { "'" ~ Alnum ~ "'" }
+      Bool  = { "true" | "false" }
+
+Id    = _{ Alpha ~ Alnum* }
+Alpha = _{ 'a'..'z' | 'A'..'Z' }
+Digit = _{ '0'..'9' }
+Alnum = _{ Alpha | Digit }
+
